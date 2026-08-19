@@ -740,7 +740,7 @@ const StorybookClip = ({ w, h }: { w: number; h: number }) => {
 const TermStorybook: Page = () => (
   <Frame chapter="②　研究過程　·　名詞解釋 02" footer="">
     <H2 size={64}>Storybook</H2>
-    <Gloss>＝ 把所有前端元件攤開來、可以直接點的展示櫃</Gloss>
+    <Gloss>＝ 將 Design System 用前端元件呈現，加上狀態與功能</Gloss>
 
     <div style={{ display: 'flex', gap: 56, marginTop: 40, flexShrink: 0 }}>
       <StorybookClip w={952} h={535} />
@@ -833,26 +833,26 @@ const Attempts: Page = () => (
       <AttemptCard
         index="01"
         name="ds-craft"
-        stance="嚴格管制：違規就擋下"
-        scale="28 KB 規範 · 9 步流程"
-        agents="3 個 Subagent"
-        result="✗ 不準，而且很燒 token"
+        stance="把規則寫死，違規就擋下"
+        scale="128 KB 規範 · 11 步流程"
+        agents="3 支 Subagent · 1 支審查"
+        result="✗ 規則守住了，設計還是不準"
       />
       <AttemptCard
         index="02"
         name="ds-studio"
-        stance="再加上策略與驗證關卡"
-        scale="20 KB 規範 · 8 階段"
-        agents="6 個 Subagent"
-        result="✗ 更完整，也更燒"
+        stance="補上 UX 階段與雙重審查"
+        scale="144 KB 規範 · 9 階段 · 5 軌"
+        agents="6 支 Subagent · 2 支審查"
+        result="✗ 更慢更貴，一樣不準"
       />
       <AttemptCard
         index="03"
         name="ds-sense"
-        stance="當參考材料，不當合規清單"
-        scale="3 KB 規範 · 4 步"
-        agents="0 個 Subagent"
-        result="✓ 準一點，也便宜很多"
+        stance="不擋不審，只當參考材料"
+        scale="21 KB 規範 · 4 步"
+        agents="0 支 Subagent · 0 支審查"
+        result="✓ 反而準一點，也便宜"
         won
       />
     </div>
@@ -882,12 +882,33 @@ const SyncNode = ({
   title,
   desc,
   auto,
+  env,
 }: {
   i: number;
   title: string;
   desc: string;
   auto?: boolean;
+  /** Which tool this step lives in — rendered as a caption above the box. */
+  env?: string;
 }) => (
+  <>
+    {env ? (
+      <div
+        style={{
+          position: 'absolute',
+          left: SF_NODE_X[i],
+          top: SF_RAIL_Y - SF_NODE_H / 2 - 34,
+          width: SF_NODE_W[i],
+          fontFamily: mono,
+          fontSize: 20,
+          lineHeight: 1.4,
+          letterSpacing: '0.08em',
+          color: c.muted,
+        }}
+      >
+        {env}
+      </div>
+    ) : null}
   <div
     style={{
       position: 'absolute',
@@ -909,6 +930,7 @@ const SyncNode = ({
     <span style={{ fontSize: 26, lineHeight: 1.3, fontWeight: 700 }}>{title}</span>
     <span style={{ fontSize: 21, lineHeight: 1.4, color: c.muted }}>{desc}</span>
   </div>
+  </>
 );
 
 /** Sits centred on the rail and paints over it, so the line reads as labelled. */
@@ -954,8 +976,8 @@ const SF_RAIL = (i: number) =>
 
 const SyncFlow: Page = () => (
   <Frame chapter="②　研究過程　·　實際做法 01" footer="">
-    <H2 size={64}>Figma ⇄ Storybook 同步</H2>
-    <Gloss>Design System 迴圈：元件怎麼從設計稿，變成 vibe coding 裝得到的套件</Gloss>
+    <H2 size={64}>Figma Design System → Storybook 同步</H2>
+    <Gloss>元件怎麼從設計稿，變成 vibe coding 裝得到的套件</Gloss>
 
     <div
       style={{
@@ -998,10 +1020,10 @@ const SyncFlow: Page = () => (
         />
       </svg>
 
-      <SyncNode i={0} title="Figma 元件" desc="設計師的工作環境" />
-      <SyncNode i={1} title="Design Ready 版本" desc="手動建立，格式要對" />
-      <SyncNode i={2} auto title="Draft PR" desc="只有任務檔，不含 code" />
-      <SyncNode i={3} title="Storybook 元件" desc="發布成套件，vibe coding 裝得到" />
+      <SyncNode i={0} env="Figma" title="Design System" desc="設計師的工作環境" />
+      <SyncNode i={1} title="建立 Design Ready 標籤" desc="版本控制及觸發自動化" />
+      <SyncNode i={2} auto env="GitHub" title="Draft PR" desc="指派給工程師進行同步" />
+      <SyncNode i={3} title="Storybook 元件" desc="發布成套件提供給 vibe code 安裝" />
 
       <EdgeLabel i={0} w={150} text={<>設計師調完<br />宣告設計完成</>} />
       <EdgeLabel i={1} w={150} auto text={<>Webhook 驗證<br />後自動開</>} />
@@ -1039,7 +1061,7 @@ const SyncFlow: Page = () => (
             color: c.muted,
           }}
         >
-          發布後 Figma 和 code 回到對齊
+          發布後 Figma 和 Storybook 回到對齊
         </span>
       </div>
     </div>
@@ -1214,23 +1236,23 @@ const FL_LOOP_Y = 450;
 // Routing bands in the gaps between lanes.
 const BAND_OK = 158;
 const BAND_NG = 176;
+const BAND_TOP = 38;
 
 // [x, width] — column order matches the FigJam board left-to-right.
 // Gaps are sized to their labels: 90px before POC ("vibe code"), 70px after each
 // gate ("不通過"), 25px elsewhere.
 const N = {
-  prd: [78, 90],
-  poc: [258, 90],
-  talk: [373, 130],
-  gUx: [528, 125],
-  ask: [723, 120],
-  fe1: [723, 120],
-  toFig: [868, 145],
-  gUi: [1038, 125],
-  figFix: [1233, 160],
-  fe2: [1233, 160],
-  gReq: [1418, 127],
-  dev: [1570, 90],
+  prd: [78, 95],
+  poc: [268, 95], // wide gap before this one carries the "vibe code" label
+  talk: [396, 140],
+  gUx: [569, 130],
+  ask: [769, 145],
+  fe1: [769, 145],
+  toFig: [947, 165],
+  figFix: [1165, 175],
+  fe2: [1165, 175],
+  gReq: [1400, 140],
+  dev: [1573, 87],
 } as const;
 
 type Col = readonly [number, number];
@@ -1361,23 +1383,22 @@ const Flow: Page = () => (
               <Ln d={`M${rt(N.poc)} ${mid(LY.pm)} H${rt(N.poc) + 16} V${mid(LY.de)} H${N.talk[0] - 6}`} />
               <Ln d={`M${rt(N.talk)} ${mid(LY.de)} H${N.gUx[0] - 6}`} />
 
-              {/* 檢視 UX 不通過 → 提出修改 → 修改前端 → 回 UI/UX 討論 */}
+              {/* 檢視 UX 不通過 → 提出修改 → 修改 vibe code → 回 UI/UX 討論 */}
               <Ln d={`M${rt(N.gUx)} ${mid(LY.de)} H${N.ask[0] - 6}`} />
               <Ln d={`M${cx(N.ask)} ${bot(LY.de)} V${LY.en - 6}`} />
               <Ln d={`M${N.fe1[0]} ${mid(LY.en)} H${cx(N.talk)} V${bot(LY.de) + 6}`} />
 
-              {/* 檢視 UX 通過 → 前端轉入 Figma */}
+              {/* 通過 → vibe code 轉入 Figma → Figma 調整 → 整體需求確認 */}
               <Ln d={`M${cx(N.gUx)} ${LY.de} V${BAND_OK} H${cx(N.toFig)} V${LY.en - 6}`} />
-              <Ln d={`M${rt(N.toFig)} ${mid(LY.en)} H${rt(N.toFig) + 16} V${mid(LY.de)} H${N.gUi[0] - 6}`} />
+              <Ln d={`M${rt(N.toFig)} ${mid(LY.en)} H${rt(N.toFig) + 16} V${mid(LY.de)} H${N.figFix[0] - 6}`} />
+              <Ln d={`M${rt(N.figFix)} ${mid(LY.de)} H${rt(N.figFix) + 16} V${mid(LY.pm)} H${N.gReq[0] - 6}`} />
 
-              {/* 檢視 UI/UX 不通過 → Figma 調整 → 修改前端 → 回檢視 */}
-              <Ln d={`M${rt(N.gUi)} ${mid(LY.de)} H${N.figFix[0] - 6}`} />
-              <Ln d={`M${cx(N.figFix)} ${bot(LY.de)} V${LY.en - 6}`} />
-              <Ln d={`M${N.fe2[0]} ${mid(LY.en)} H${cx(N.gUi)} V${bot(LY.de) + 6}`} />
+              {/* 新的修正迴圈：需求確認 → 改 vibe code → 同步回 Figma */}
+              <Ln d={`M${cx(N.gReq) + 40} ${bot(LY.pm)} V${mid(LY.en)} H${rt(N.fe2) + 6}`} />
 
-              {/* 檢視 UI/UX 通過 → 整體需求確認；不通過 → 回 Figma 調整 */}
-              <Ln d={`M${cx(N.gUi)} ${LY.de} V${BAND_OK} H${cx(N.gReq)} V${bot(LY.pm) + 6}`} />
-              <Ln d={`M${cx(N.gReq)} ${bot(LY.pm)} V${BAND_NG} H${cx(N.figFix)} V${LY.de - 6}`} />
+              {/* 整體需求確認 不通過 → 回 Figma 細節與元件調整 */}
+              <Ln d={`M${cx(N.gReq)} ${LY.pm} V${BAND_TOP} H${cx(N.figFix)} V${LY.de - 6}`} />
+              <Ln d={`M${cx(N.fe2)} ${LY.en} V${bot(LY.de) + 6}`} />
 
               {/* 整體需求確認 通過 → 開發 */}
               <Ln d={`M${rt(N.gReq)} ${mid(LY.pm)} H${rt(N.gReq) + 16} V${mid(LY.en)} H${N.dev[0] - 6}`} />
@@ -1388,20 +1409,19 @@ const Flow: Page = () => (
             <FlNode n={N.talk} y={LY.de} title="UI/UX 討論" />
             <FlNode n={N.gUx} y={LY.de} title="檢視 UX" gate />
             <FlNode n={N.ask} y={LY.de} title="提出修改" />
-            <FlNode n={N.fe1} y={LY.en} title="修改前端" />
-            <FlNode n={N.toFig} y={LY.en} title="前端轉入 Figma" />
-            <FlNode n={N.gUi} y={LY.de} title="檢視 UI/UX" gate />
+            <FlNode n={N.fe1} y={LY.en} title="修改 vibe code" />
+            <FlNode n={N.toFig} y={LY.en} title="vibe code 轉入 Figma" />
             <FlNode n={N.figFix} y={LY.de} title="Figma 細節與元件調整" />
-            <FlNode n={N.fe2} y={LY.en} title="修改前端" />
+            <FlNode n={N.fe2} y={LY.en} title="修改 vibe code" />
             <FlNode n={N.gReq} y={LY.pm} title="整體需求確認" gate />
             <FlNode n={N.dev} y={LY.en} title="開發" />
 
             <FlTag x={rt(N.prd) + 22} y={mid(LY.pm)} text={<>vibe<br />code</>} tone={c.accentInk} />
             <FlTag x={rt(N.gUx) + 4} y={mid(LY.de)} text="不通過" />
             <FlTag x={cx(N.gUx) + 8} y={BAND_OK} text="通過" />
-            <FlTag x={rt(N.gUi) + 4} y={mid(LY.de)} text="不通過" />
-            <FlTag x={cx(N.gUi) + 8} y={BAND_OK} text="通過" />
-            <FlTag x={cx(N.gReq) - 80} y={BAND_NG} text="不通過" />
+            <FlTag x={cx(N.fe2) + 14} y={278} text="同步到 Figma" />
+            <FlTag x={cx(N.gReq) - 90} y={mid(LY.en)} text="新需求或調整" />
+            <FlTag x={cx(N.figFix) + 60} y={BAND_TOP} text="不通過" />
             <FlTag x={rt(N.gReq) + 22} y={278} text="通過" />
           </div>
         </Step>
@@ -1421,13 +1441,13 @@ const Flow: Page = () => (
                 </marker>
               </defs>
               {/* 修改前端 → 調整／新增共用元件 */}
-              <path d={`M${cx(N.fe2)} ${bot(LY.en)} V408 H250 V${FL_LOOP_Y - 6}`} fill="none" stroke="var(--osd-accent)" strokeWidth={3} strokeDasharray="9 7" markerEnd="url(#flD)" />
+              <path d={`M${cx(N.fe2)} ${bot(LY.en)} V${FL_LOOP_Y - 6}`} fill="none" stroke="var(--osd-accent)" strokeWidth={3} strokeDasharray="9 7" markerEnd="url(#flD)" />
               {/* DS 套件 → POC */}
-              <path d={`M1480 ${FL_LOOP_Y} V430 H${cx(N.poc)} V${bot(LY.pm) + 6}`} fill="none" stroke="var(--osd-accent)" strokeWidth={3} strokeDasharray="9 7" markerEnd="url(#flD)" />
+              <path d={`M${rt(N.prd) + 48} ${FL_LOOP_Y} V${bot(LY.pm) + 6}`} fill="none" stroke="var(--osd-accent)" strokeWidth={3} strokeDasharray="9 7" markerEnd="url(#flD)" />
             </svg>
 
             <FlTag x={cx(N.fe2) + 10} y={408} text="import" tone={c.accentInk} />
-            <FlTag x={cx(N.poc) + 12} y={430} text="skill 套用" tone={c.accentInk} />
+            <FlTag x={rt(N.prd) + 56} y={202} text="skill 套用" tone={c.accentInk} />
 
             <div
               style={{
@@ -1446,7 +1466,7 @@ const Flow: Page = () => (
               }}
             >
               <span style={{ fontFamily: mono, fontSize: 19, letterSpacing: '0.08em', color: 'var(--osd-accent)' }}>
-                Design System 迴圈　·　設計師 → 工程師
+                Figma Design System → Storybook 同步
               </span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <LoopChip text="調整／新增共用元件" />
@@ -1559,7 +1579,7 @@ const Takeaways: Page = () => (
             它做得出「像設計的東西」，
           </div>
           <div style={{ fontSize: 48, lineHeight: 1.4, fontWeight: 800 }}>
-            做不出<Mark>「對的設計」</Mark>。
+            不好做出<Mark>「對的設計」</Mark>。
           </div>
         </div>
       </Step>
@@ -1567,12 +1587,15 @@ const Takeaways: Page = () => (
       <Step>
         <div>
           <div style={{ height: 1, background: c.rule, margin: '44px 0' }} />
-          <TakeawayLabel text="二 · vibe code 的風險藏在優點裡" />
+          <TakeawayLabel text="二 · vibe code 的價值是速度" />
           <div style={{ fontSize: 40, lineHeight: 1.4, color: c.muted, marginTop: 18 }}>
-            它很快，能直接生出會動的 POC，
+            做出 POC 的難度降低也更快，
           </div>
           <div style={{ fontSize: 48, lineHeight: 1.4, fontWeight: 800 }}>
-            風險不是做得爛，是做得<Mark>「看起來很好」</Mark>。
+            需求討論時可以直接看<Mark>真實畫面</Mark>。
+          </div>
+          <div style={{ fontSize: 36, lineHeight: 1.5, color: c.muted, marginTop: 12 }}>
+            但實際開發時的把關還是重要。
           </div>
         </div>
       </Step>
@@ -1681,7 +1704,7 @@ export const notes: (string | undefined)[] = [
 
   `【25s】名詞解釋 02 —— Storybook。
 
-規範寫在文件裡沒有用，AI 讀不到，人也懶得看。Storybook 是把所有前端元件攤開來的展示櫃——每個元件長什麼樣、有哪些狀態，全部列在上面，而且可以直接點。
+規範寫在文件裡沒有用，AI 讀不到，人也懶得看。Storybook 是把 Design System 用前端元件呈現出來——每個元件長什麼樣、有哪些狀態，而且是帶著真實功能的，可以直接點、直接試。
 
 〔指影片〕左邊那排就是我們所有的元件，一個元件一頁——長什麼樣、有哪些狀態，按鈕的 primary、secondary、停用，全部列在上面，而且可以直接點、直接試。
 
@@ -1689,7 +1712,7 @@ export const notes: (string | undefined)[] = [
 
 （同步是怎麼運作的、跟 Figma 的關係，下一頁再講。這頁只要讓大家知道 Storybook 長什麼樣。）`,
 
-  `【40s】實際做法 01 —— Figma ⇄ Storybook 同步。
+  `【40s】實際做法 01 —— Figma Design System ⇄ Storybook 同步。
 
 這條線叫 Design System 迴圈：元件怎麼從設計稿，變成 vibe coding 裝得到的套件。三段。
 
@@ -1703,17 +1726,20 @@ export const notes: (string | undefined)[] = [
 
   `【35s】實際做法 02 —— 使用 Storybook 套件進行 vibe code。⭐ 這頁是這次研究最誠實的一頁。
 
-有了套件之後，怎麼讓 AI 真的用它？靠 skill。三個 skill 裡裝的東西都一樣：Storybook 的真實元件，加上設計師的 UX 心法。差別在「管多嚴」——我試了三次才找到。
+有了套件之後，怎麼讓 AI 真的用它？靠 skill。三個 skill 裡裝的東西都一樣：Storybook 的真實元件，加上設計師的 UX 心法。差別在「管多嚴」——我試了三次。
 
-〔01 ds-craft〕第一版管得很硬。28 KB 的規範、9 步流程、3 個 Subagent，違規就擋下來、不准硬刻。結果不準，而且很燒 token。
+〔01 ds-craft〕第一版的設計目標就是「限制得夠嚴」。規則寫死，AI 一違規就擋下來、不准硬刻，整套規範 128 KB、11 步流程、3 支 Subagent。
+結果很有意思：規則確實守住了——它不會用錯顏色、不會用非 DS 的元件。但畫面還是不準。
 
-〔02 ds-studio〕我以為是管得還不夠完整，所以加上 UX 策略、方向發散、驗證關卡——變成 8 個階段、6 個 Subagent。結果一樣不準，只是更貴。
+〔02 ds-studio〕我以為是「管的東西不夠全面」，所以往前延伸：加上 UX 策略階段、品味校準、方向發散，驗證那關從一支 reviewer 變兩支。規範長到 144 KB、9 個階段、6 支 Subagent。
+結果一樣不準，只是更慢更貴。
 
-〔03 ds-sense〕最後我反過來做。規範從 28 KB 砍到 3 KB，Subagent 全部拿掉，立場改成：DS 的 token 跟元件是「材料」不是「合規清單」，超出 DS 不算錯。結果反而準一點，也便宜很多。
+〔03 ds-sense〕最後我反過來做。規範砍到 21 KB、Subagent 全部拿掉、審查全部拿掉，立場改成：DS 的 token 跟元件是「材料」不是「合規清單」，超出 DS 不算錯。
+結果反而準一點，也便宜很多。
 
 〔停一下〕管得越嚴，AI 反而做得越差。
 
-這跟我原本的直覺完全相反——我以為規範寫得越完整，AI 就越聽話。實際上規範太細的時候，它花力氣在滿足檢查，不是在把畫面做對。`,
+這跟我原本的直覺完全相反。我事後的理解是：規範太細的時候，它花力氣在滿足檢查，不是在把畫面做對——第一版就是最好的例子，規則全過，設計還是不對。`,
 
   `【1:45】三個想法試下來，長出這條流程。這張圖是結果，不是我一開始就畫好的。不要逐節點講，只要傳達三件事。
 
@@ -1744,11 +1770,13 @@ export const notes: (string | undefined)[] = [
 
 所以差距不是「規範寫得不夠」造成的。它缺的不是規則，是判斷。
 
-二、vibe code 的風險，其實藏在它的優點裡。
+二、vibe code 的價值就是速度，這點我要講清楚。
 
-優點很明顯：快，而且一出手就是會動的 POC——大家討論的時候看的是真的，不是圖、不是文字。
+做出 POC 的難度降低了，速度也快很多——以前要花好幾天，現在當天就有東西。
 
-但也正因為這樣，風險不是做得爛，是做得「看起來很好」。完成度看起來很高，人就容易跳過該有的檢查。
+更關鍵的是討論的品質：以前開會拿著圖跟文字在想像，現在直接看真實畫面，能點、能操作、會有反應。要改什麼、哪裡怪，當場就講得出來。
+
+但要講清楚它加速的是哪一段：只有「做出來」。確認這東西對不對——UX 順不順、細節對不對、跟需求合不合——還是要人一道一道看，跟以前一樣慢。這就是為什麼流程裡那幾道關一道都不能省。
 這就是為什麼我們流程裡要有那三道關。不是不信任 AI，是因為它太會裝了。
 以上，謝謝。`,
 ];
