@@ -830,31 +830,39 @@ const Attempts: Page = () => (
     <Gloss>透過 skill 達成：Storybook 元件 ＋ 設計師的 UX 心法</Gloss>
 
     <div style={{ display: 'flex', gap: 40, marginTop: 44, flexShrink: 0, alignItems: 'flex-start' }}>
-      <AttemptCard
-        index="01"
-        name="ds-craft"
-        stance="把規則寫死，違規就擋下"
-        scale="128 KB 規範 · 11 步流程"
-        agents="3 支 Subagent · 1 支審查"
-        result="✗ 規則守住了，設計還是不準"
-      />
-      <AttemptCard
-        index="02"
-        name="ds-studio"
-        stance="補上 UX 階段與雙重審查"
-        scale="144 KB 規範 · 9 階段 · 5 軌"
-        agents="6 支 Subagent · 2 支審查"
-        result="✗ 更慢更貴，一樣不準"
-      />
-      <AttemptCard
-        index="03"
-        name="ds-sense"
-        stance="不擋不審，只當參考材料"
-        scale="21 KB 規範 · 4 步"
-        agents="0 支 Subagent · 0 支審查"
-        result="✓ 反而準一點，也便宜"
-        won
-      />
+      <Steps>
+        <Step>
+          <AttemptCard
+            index="01"
+            name="ds-craft"
+            stance="把規則寫死，違規就擋下"
+            scale="128 KB 規範 · 11 步流程"
+            agents="3 支 Subagent · 1 支審查"
+            result="✗ 規則守住了，設計還是不準"
+          />
+        </Step>
+        <Step>
+          <AttemptCard
+            index="02"
+            name="ds-studio"
+            stance="補上 UX 階段與雙重審查"
+            scale="144 KB 規範 · 9 階段 · 5 軌"
+            agents="6 支 Subagent · 2 支審查"
+            result="✗ 更慢更貴，一樣不準"
+          />
+        </Step>
+        <Step>
+          <AttemptCard
+            index="03"
+            name="ds-sense"
+            stance="不擋不審，只當參考材料"
+            scale="21 KB 規範 · 4 步"
+            agents="0 支 Subagent · 0 支審查"
+            result="✓ 反而準一點，也便宜"
+            won
+          />
+        </Step>
+      </Steps>
     </div>
 
     <Steps>
@@ -1356,131 +1364,125 @@ const Flow: Page = () => (
     <H2 size={64}>協作流程</H2>
 
     <div style={{ position: 'relative', width: FL_W, height: FL_H, marginTop: 32, flexShrink: 0 }}>
-      <Steps>
-        {/* build 1 — 三泳道：主路徑 + 兩條退回 */}
-        <Step>
-          <div style={{ position: 'absolute', inset: 0 }}>
-            <FlLane y={LY.pm} name="PM" />
-            <FlLane y={LY.de} name="設計師" />
-            <FlLane y={LY.en} name="工程師" />
+        {/* 三泳道：主路徑 + 兩條退回 */}
+      <div style={{ position: 'absolute', inset: 0 }}>
+        <FlLane y={LY.pm} name="PM" />
+        <FlLane y={LY.de} name="設計師" />
+        <FlLane y={LY.en} name="工程師" />
 
-            <svg
-              width={FL_W}
-              height={FL_H}
-              viewBox={`0 0 ${FL_W} ${FL_H}`}
-              style={{ position: 'absolute', inset: 0, overflow: 'visible' }}
-            >
-              <defs>
-                <marker id="flA" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
-                  <path d="M0,0 L10,4 L0,8 Z" fill={c.ink2} />
-                </marker>
-                <marker id="flC" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
-                  <path d="M0,0 L10,4 L0,8 Z" fill="var(--osd-accent)" />
-                </marker>
-              </defs>
+        <svg
+          width={FL_W}
+          height={FL_H}
+          viewBox={`0 0 ${FL_W} ${FL_H}`}
+          style={{ position: 'absolute', inset: 0, overflow: 'visible' }}
+        >
+          <defs>
+            <marker id="flA" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+              <path d="M0,0 L10,4 L0,8 Z" fill={c.ink2} />
+            </marker>
+            <marker id="flC" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+              <path d="M0,0 L10,4 L0,8 Z" fill="var(--osd-accent)" />
+            </marker>
+          </defs>
 
-              <Ln d={`M${rt(N.prd)} ${mid(LY.pm)} H${N.poc[0] - 6}`} />
-              <Ln d={`M${rt(N.poc)} ${mid(LY.pm)} H${rt(N.poc) + 16} V${mid(LY.de)} H${N.talk[0] - 6}`} />
-              <Ln d={`M${rt(N.talk)} ${mid(LY.de)} H${N.gUx[0] - 6}`} />
+          <Ln d={`M${rt(N.prd)} ${mid(LY.pm)} H${N.poc[0] - 6}`} />
+          <Ln d={`M${rt(N.poc)} ${mid(LY.pm)} H${rt(N.poc) + 16} V${mid(LY.de)} H${N.talk[0] - 6}`} />
+          <Ln d={`M${rt(N.talk)} ${mid(LY.de)} H${N.gUx[0] - 6}`} />
 
-              {/* 檢視 UX 不通過 → 提出修改 → 修改 vibe code → 回 UI/UX 討論 */}
-              <Ln d={`M${rt(N.gUx)} ${mid(LY.de)} H${N.ask[0] - 6}`} />
-              <Ln d={`M${cx(N.ask)} ${bot(LY.de)} V${LY.en - 6}`} />
-              <Ln d={`M${N.fe1[0]} ${mid(LY.en)} H${cx(N.talk)} V${bot(LY.de) + 6}`} />
+          {/* 檢視 UX 不通過 → 提出修改 → 修改 vibe code → 回 UI/UX 討論 */}
+          <Ln d={`M${rt(N.gUx)} ${mid(LY.de)} H${N.ask[0] - 6}`} />
+          <Ln d={`M${cx(N.ask)} ${bot(LY.de)} V${LY.en - 6}`} />
+          <Ln d={`M${N.fe1[0]} ${mid(LY.en)} H${cx(N.talk)} V${bot(LY.de) + 6}`} />
 
-              {/* 通過 → vibe code 轉入 Figma → Figma 調整 → 整體需求確認 */}
-              <Ln d={`M${cx(N.gUx)} ${LY.de} V${BAND_OK} H${cx(N.toFig)} V${LY.en - 6}`} />
-              <Ln d={`M${rt(N.toFig)} ${mid(LY.en)} H${rt(N.toFig) + 16} V${mid(LY.de)} H${N.figFix[0] - 6}`} />
-              <Ln d={`M${rt(N.figFix)} ${mid(LY.de)} H${rt(N.figFix) + 16} V${mid(LY.pm)} H${N.gReq[0] - 6}`} />
+          {/* 通過 → vibe code 轉入 Figma → Figma 調整 → 整體需求確認 */}
+          <Ln d={`M${cx(N.gUx)} ${LY.de} V${BAND_OK} H${cx(N.toFig)} V${LY.en - 6}`} />
+          <Ln d={`M${rt(N.toFig)} ${mid(LY.en)} H${rt(N.toFig) + 16} V${mid(LY.de)} H${N.figFix[0] - 6}`} />
+          <Ln d={`M${rt(N.figFix)} ${mid(LY.de)} H${rt(N.figFix) + 16} V${mid(LY.pm)} H${N.gReq[0] - 6}`} />
 
-              {/* 新的修正迴圈：需求確認 → 改 vibe code → 同步回 Figma */}
-              <Ln d={`M${cx(N.gReq) + 40} ${bot(LY.pm)} V${mid(LY.en)} H${rt(N.fe2) + 6}`} />
+          {/* 新的修正迴圈：需求確認 → 改 vibe code → 同步回 Figma */}
+          <Ln d={`M${cx(N.gReq) + 40} ${bot(LY.pm)} V${mid(LY.en)} H${rt(N.fe2) + 6}`} />
 
-              {/* 整體需求確認 不通過 → 回 Figma 細節與元件調整 */}
-              <Ln d={`M${cx(N.gReq)} ${LY.pm} V${BAND_TOP} H${cx(N.figFix)} V${LY.de - 6}`} />
-              <Ln d={`M${cx(N.fe2)} ${LY.en} V${bot(LY.de) + 6}`} />
+          {/* 整體需求確認 不通過 → 回 Figma 細節與元件調整 */}
+          <Ln d={`M${cx(N.gReq)} ${LY.pm} V${BAND_TOP} H${cx(N.figFix)} V${LY.de - 6}`} />
+          <Ln d={`M${cx(N.fe2)} ${LY.en} V${bot(LY.de) + 6}`} />
 
-              {/* 整體需求確認 通過 → 開發 */}
-              <Ln d={`M${rt(N.gReq)} ${mid(LY.pm)} H${rt(N.gReq) + 16} V${mid(LY.en)} H${N.dev[0] - 6}`} />
-            </svg>
+          {/* 整體需求確認 通過 → 開發 */}
+          <Ln d={`M${rt(N.gReq)} ${mid(LY.pm)} H${rt(N.gReq) + 16} V${mid(LY.en)} H${N.dev[0] - 6}`} />
+        </svg>
 
-            <FlNode n={N.prd} y={LY.pm} title="PRD" />
-            <FlNode n={N.poc} y={LY.pm} title="POC" />
-            <FlNode n={N.talk} y={LY.de} title="UI/UX 討論" />
-            <FlNode n={N.gUx} y={LY.de} title="檢視 UX" gate />
-            <FlNode n={N.ask} y={LY.de} title="提出修改" />
-            <FlNode n={N.fe1} y={LY.en} title="修改 vibe code" />
-            <FlNode n={N.toFig} y={LY.en} title="vibe code 轉入 Figma" />
-            <FlNode n={N.figFix} y={LY.de} title="Figma 細節與元件調整" />
-            <FlNode n={N.fe2} y={LY.en} title="修改 vibe code" />
-            <FlNode n={N.gReq} y={LY.pm} title="整體需求確認" gate />
-            <FlNode n={N.dev} y={LY.en} title="開發" />
+        <FlNode n={N.prd} y={LY.pm} title="PRD" />
+        <FlNode n={N.poc} y={LY.pm} title="POC" />
+        <FlNode n={N.talk} y={LY.de} title="UI/UX 討論" />
+        <FlNode n={N.gUx} y={LY.de} title="檢視 UX" gate />
+        <FlNode n={N.ask} y={LY.de} title="提出修改" />
+        <FlNode n={N.fe1} y={LY.en} title="修改 vibe code" />
+        <FlNode n={N.toFig} y={LY.en} title="vibe code 轉入 Figma" />
+        <FlNode n={N.figFix} y={LY.de} title="Figma 細節與元件調整" />
+        <FlNode n={N.fe2} y={LY.en} title="修改 vibe code" />
+        <FlNode n={N.gReq} y={LY.pm} title="整體需求確認" gate />
+        <FlNode n={N.dev} y={LY.en} title="開發" />
 
-            <FlTag x={rt(N.prd) + 22} y={mid(LY.pm)} text={<>vibe<br />code</>} tone={c.accentInk} />
-            <FlTag x={rt(N.gUx) + 4} y={mid(LY.de)} text="不通過" />
-            <FlTag x={cx(N.gUx) + 8} y={BAND_OK} text="通過" />
-            <FlTag x={cx(N.fe2) + 14} y={278} text="同步到 Figma" />
-            <FlTag x={cx(N.gReq) - 90} y={mid(LY.en)} text="新需求或調整" />
-            <FlTag x={cx(N.figFix) + 60} y={BAND_TOP} text="不通過" />
-            <FlTag x={rt(N.gReq) + 22} y={278} text="通過" />
+        <FlTag x={rt(N.prd) + 22} y={mid(LY.pm)} text={<>vibe<br />code</>} tone={c.accentInk} />
+        <FlTag x={rt(N.gUx) + 4} y={mid(LY.de)} text="不通過" />
+        <FlTag x={cx(N.gUx) + 8} y={BAND_OK} text="通過" />
+        <FlTag x={cx(N.fe2) + 14} y={278} text="同步到 Figma" />
+        <FlTag x={cx(N.gReq) - 90} y={mid(LY.en)} text="新需求或調整" />
+        <FlTag x={cx(N.figFix) + 60} y={BAND_TOP} text="不通過" />
+        <FlTag x={rt(N.gReq) + 22} y={278} text="通過" />
+      </div>
+
+    {/* Design System 迴圈 + 兩條接線 */}
+      <div style={{ position: 'absolute', inset: 0 }}>
+        <svg
+          width={FL_W}
+          height={FL_H}
+          viewBox={`0 0 ${FL_W} ${FL_H}`}
+          style={{ position: 'absolute', inset: 0, overflow: 'visible' }}
+        >
+          <defs>
+            <marker id="flD" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+              <path d="M0,0 L10,4 L0,8 Z" fill="var(--osd-accent)" />
+            </marker>
+          </defs>
+          {/* 修改前端 → 調整／新增共用元件 */}
+          <path d={`M${cx(N.fe2)} ${bot(LY.en)} V${FL_LOOP_Y - 6}`} fill="none" stroke="var(--osd-accent)" strokeWidth={3} strokeDasharray="9 7" markerEnd="url(#flD)" />
+          {/* DS 套件 → POC */}
+          <path d={`M${rt(N.prd) + 48} ${FL_LOOP_Y} V${bot(LY.pm) + 6}`} fill="none" stroke="var(--osd-accent)" strokeWidth={3} strokeDasharray="9 7" markerEnd="url(#flD)" />
+        </svg>
+
+        <FlTag x={cx(N.fe2) + 10} y={408} text="import" tone={c.accentInk} />
+        <FlTag x={rt(N.prd) + 56} y={202} text="skill 套用" tone={c.accentInk} />
+
+        <div
+          style={{
+            position: 'absolute',
+            left: 78,
+            top: FL_LOOP_Y,
+            width: FL_W - 78,
+            boxSizing: 'border-box',
+            background: c.paper,
+            border: `3px solid ${c.rule}`,
+            borderRadius: 'var(--osd-radius)',
+            padding: '16px 22px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+          }}
+        >
+          <span style={{ fontFamily: mono, fontSize: 19, letterSpacing: '0.08em', color: 'var(--osd-accent)' }}>
+            Figma Design System → Storybook 同步
+          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <LoopChip text="調整／新增共用元件" />
+            <LoopSep />
+            <LoopChip text="Figma Design System" />
+            <LoopSep />
+            <LoopChip text="Storybook" />
+            <LoopSep />
+            <LoopChip text="Design System 套件" />
           </div>
-        </Step>
-
-        {/* build 2 — Design System 迴圈 + 兩條接線 */}
-        <Step>
-          <div style={{ position: 'absolute', inset: 0 }}>
-            <svg
-              width={FL_W}
-              height={FL_H}
-              viewBox={`0 0 ${FL_W} ${FL_H}`}
-              style={{ position: 'absolute', inset: 0, overflow: 'visible' }}
-            >
-              <defs>
-                <marker id="flD" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
-                  <path d="M0,0 L10,4 L0,8 Z" fill="var(--osd-accent)" />
-                </marker>
-              </defs>
-              {/* 修改前端 → 調整／新增共用元件 */}
-              <path d={`M${cx(N.fe2)} ${bot(LY.en)} V${FL_LOOP_Y - 6}`} fill="none" stroke="var(--osd-accent)" strokeWidth={3} strokeDasharray="9 7" markerEnd="url(#flD)" />
-              {/* DS 套件 → POC */}
-              <path d={`M${rt(N.prd) + 48} ${FL_LOOP_Y} V${bot(LY.pm) + 6}`} fill="none" stroke="var(--osd-accent)" strokeWidth={3} strokeDasharray="9 7" markerEnd="url(#flD)" />
-            </svg>
-
-            <FlTag x={cx(N.fe2) + 10} y={408} text="import" tone={c.accentInk} />
-            <FlTag x={rt(N.prd) + 56} y={202} text="skill 套用" tone={c.accentInk} />
-
-            <div
-              style={{
-                position: 'absolute',
-                left: 78,
-                top: FL_LOOP_Y,
-                width: FL_W - 78,
-                boxSizing: 'border-box',
-                background: c.paper,
-                border: `3px solid ${c.rule}`,
-                borderRadius: 'var(--osd-radius)',
-                padding: '16px 22px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 12,
-              }}
-            >
-              <span style={{ fontFamily: mono, fontSize: 19, letterSpacing: '0.08em', color: 'var(--osd-accent)' }}>
-                Figma Design System → Storybook 同步
-              </span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <LoopChip text="調整／新增共用元件" />
-                <LoopSep />
-                <LoopChip text="Figma Design System" />
-                <LoopSep />
-                <LoopChip text="Storybook" />
-                <LoopSep />
-                <LoopChip text="Design System 套件" />
-              </div>
-            </div>
-          </div>
-        </Step>
-      </Steps>
+        </div>
+      </div>
     </div>
   </Frame>
 );
@@ -1571,35 +1573,29 @@ const Takeaways: Page = () => (
   <Frame chapter="④　心得" footer="">
     <H2 size={68}>心得</H2>
 
-    <Steps>
-      <Step>
-        <div style={{ marginTop: 48 }}>
-          <TakeawayLabel text="一 · AI 做設計還是有差距" />
-          <div style={{ fontSize: 40, lineHeight: 1.4, color: c.muted, marginTop: 18 }}>
-            它做得出「像設計的東西」，
-          </div>
-          <div style={{ fontSize: 48, lineHeight: 1.4, fontWeight: 800 }}>
-            不好做出<Mark>「對的設計」</Mark>。
-          </div>
-        </div>
-      </Step>
+    <div style={{ marginTop: 48 }}>
+      <TakeawayLabel text="一 · AI 做設計還是有差距" />
+      <div style={{ fontSize: 40, lineHeight: 1.4, color: c.muted, marginTop: 18 }}>
+        它做得出「像設計的東西」，
+      </div>
+      <div style={{ fontSize: 48, lineHeight: 1.4, fontWeight: 800 }}>
+        不好做出<Mark>「對的設計」</Mark>。
+      </div>
+    </div>
 
-      <Step>
-        <div>
-          <div style={{ height: 1, background: c.rule, margin: '44px 0' }} />
-          <TakeawayLabel text="二 · vibe code 的價值是速度" />
-          <div style={{ fontSize: 40, lineHeight: 1.4, color: c.muted, marginTop: 18 }}>
-            做出 POC 的難度降低也更快，
-          </div>
-          <div style={{ fontSize: 48, lineHeight: 1.4, fontWeight: 800 }}>
-            需求討論時可以直接看<Mark>真實畫面</Mark>。
-          </div>
-          <div style={{ fontSize: 36, lineHeight: 1.5, color: c.muted, marginTop: 12 }}>
-            但實際開發時的把關還是重要。
-          </div>
-        </div>
-      </Step>
-    </Steps>
+    <div>
+      <div style={{ height: 1, background: c.rule, margin: '44px 0' }} />
+      <TakeawayLabel text="二 · vibe code 的價值是速度" />
+      <div style={{ fontSize: 40, lineHeight: 1.4, color: c.muted, marginTop: 18 }}>
+        做出 POC 的難度降低也更快，
+      </div>
+      <div style={{ fontSize: 48, lineHeight: 1.4, fontWeight: 800 }}>
+        需求討論時可以直接看<Mark>真實畫面</Mark>。
+      </div>
+      <div style={{ fontSize: 36, lineHeight: 1.5, color: c.muted, marginTop: 12 }}>
+        但實際開發時的把關還是重要。
+      </div>
+    </div>
   </Frame>
 );
 
